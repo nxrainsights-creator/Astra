@@ -1,0 +1,60 @@
+Your project
+Project name
+NXRA-PORTAL
+Project ID
+nxra-portal
+Project number
+1084781179957
+Web API key
+AIzaSyBLogsJmDhAbBYWAaa9RFg4Vd0gyiT81iA
+Environment
+This setting customises your project for different stages of the app lifecycle
+Environment type
+Production
+Your apps
+Web apps
+Astra
+Web app
+App nickname
+Astra
+App ID
+1:1084781179957:web:d45e5c46fd90f719286d7c
+Linked Firebase Hosting site
+nxra-portal
+
+SDK setup and configuration
+
+npm
+
+CDN
+
+Config
+If you're already using NPM and a module bundler such as webpack or Rollup, you can run the following command to install the latest SDK (Learn more):
+
+npm install firebase
+Then, initialise Firebase and begin using the SDKs for the products that you'd like to use.
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBLogsJmDhAbBYWAaa9RFg4Vd0gyiT81iA",
+  authDomain: "nxra-portal.firebaseapp.com",
+  projectId: "nxra-portal",
+  storageBucket: "nxra-portal.firebasestorage.app",
+  messagingSenderId: "1084781179957",
+  appId: "1:1084781179957:web:d45e5c46fd90f719286d7c",
+  measurementId: "G-VKKXZ67TNX"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+Note: This option uses the modular JavaScript SDK, which provides a reduced SDK size.
+
+Learn more about Firebase for web: Get started, Web SDK API Reference, Samples
