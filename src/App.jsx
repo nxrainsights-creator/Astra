@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import ClientCRM from './components/ClientCRM/ClientCRM';
 import RnDTracker from './components/RnDTracker/RnDTracker';
 import Marketing from './components/Marketing/Marketing';
+import Finance from './components/Finance/Finance';
+import Management from './components/Management/Management';
+import Pikachu from './components/Pikachu/Pikachu';
 import './App.css';
 
 function App() {
@@ -31,9 +34,17 @@ function App() {
               <span className="nav-icon">📱</span>
               <span className="nav-text">Marketing</span>
             </Link>
+            <Link to="/finance" className="nav-link">
+              <span className="nav-icon">💰</span>
+              <span className="nav-text">Finance</span>
+            </Link>
+            <Link to="/management" className="nav-link">
+              <span className="nav-icon">📊</span>
+              <span className="nav-text">Management</span>
+            </Link>
           </div>
           <div className="sidebar-footer">
-            <p>Sanjai's Modules</p>
+            <p>NXRA Portal</p>
             <p className="version">v1.0.0</p>
           </div>
         </nav>
@@ -44,8 +55,13 @@ function App() {
             <Route path="/clients" element={<ClientCRM />} />
             <Route path="/rnd" element={<RnDTracker />} />
             <Route path="/marketing" element={<Marketing />} />
+            <Route path="/finance" element={<Finance />} />
+            <Route path="/management" element={<Management />} />
           </Routes>
         </main>
+
+        {/* Pikachu Chatbot - Floating on all pages */}
+        <Pikachu />
       </div>
     </Router>
   );
