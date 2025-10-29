@@ -1,0 +1,42 @@
+👥 Team Roles
+🔸 Navani A. – Lead for Management + Finance + Chatbot
+Responsibilities
+
+Finance System
+
+Invoice Generator (auto-fetch client details from CRM)
+
+Billing Dashboard & Reports (Firebase aggregations)
+
+Salary Allocation System (auto calculate from task logs)
+
+Save all invoices to Firebase Storage as PDF
+
+Management Panel
+
+Task Assignment Dashboard (CRUD operations)
+
+Department-wise monitoring of progress
+    
+KPI overview dashboard
+
+Chatbot “Pikachu”
+
+Core logic + UI integration
+
+Handles queries on modules and features
+
+Uses Firebase knowledge base collection (FAQ data)
+
+Floating chat widget on every page
+
+
+//👨‍💻 Navani (Lead – Management, Finance & Chatbot)
+
+Navani is responsible for designing and implementing all Finance, Management, and Chatbot modules, including their UI/UX and backend Firebase integration.
+
+The Finance System should include an Invoice Generator that automatically fetches client details from the CRM module and generates invoices dynamically. A Billing Dashboard should display total revenue, pending invoices, and transactions using Firebase analytics. Implement a Salary Allocation System that calculates pay based on task logs and stores salary reports in Firestore. All generated invoices and reports should be uploaded to Firebase Cloud Storage in PDF format.
+
+The Management Panel will handle internal task assignments. Create a Task Assignment Dashboard that supports full CRUD operations and real-time synchronization with Firebase. Managers should be able to assign, edit, and monitor progress through the Task Management System. Include an interface for monitoring Department KPIs based on task completion and performance metrics.
+
+Additionally, Navani will develop Pikachu, the built-in Chatbot Assistant. Pikachu should provide instant Q&A support related to app modules and functions. It must use Firebase collections as a knowledge base containing FAQs, system commands, and user help topics. The chatbot must appear as a floating widget on all pages, built with JavaScript logic and integrated with Firebase for dynamic query response"

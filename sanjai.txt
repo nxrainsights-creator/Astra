@@ -1,0 +1,39 @@
+
+🔸 Sanjai – Lead for Client + R&D + Marketing Modules
+Responsibilities
+
+Client & CRM
+
+CRUD client data (Name, Mail, Company, Phone, Project, Status)
+
+Link client records with Finance invoices
+
+Search and filter clients
+
+R&D Module
+
+Weekly Update form + Timeline view
+
+File uploads (images/docs) to Firebase Storage
+
+Progress display dashboard
+
+Social Media & Marketing
+
+Campaign Tracker (task-based activity board)
+
+Festival Calendar (autofill events from Firebase Calendar collection)
+
+Performance report integration
+
+
+
+//👨‍💻 Sanjai (Lead – Client, R&D & Marketing Modules)
+
+Sanjai is responsible for building and integrating the Client, R&D, and Marketing modules, covering both UI and Firebase logic.
+
+The Client & CRM Module must allow CRUD operations for storing and managing client information such as name, company, email, phone, and project details. It should seamlessly integrate with the Finance System, allowing invoice generation based on client records. The CRM dashboard should also provide an integrated view to track project progress, billing status, and client details.
+
+The R&D Tracker will help record weekly research updates. Build a form interface for team members to submit weekly progress reports with text and file uploads (images, screenshots, PDFs). The system should store these updates in Firebase Firestore and uploaded files in Firebase Storage, displaying them in a timeline-style view.
+
+The Social Media & Marketing Module will include a Campaign Tracker for managing ongoing social or ad campaigns, complete with status tracking and analytics. Implement a Festival Calendar Integration where events and festivals are preloaded into Firebase and displayed in a calendar view. The dashboard should also show campaign progress, metrics, and pending marketing tasks.

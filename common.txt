@@ -1,0 +1,32 @@
+🤝 Shared Responsibilities
+
+Firebase Setup: Firestore (db.js / firebase.mjs config), Auth, Storage
+
+Login & Signup System (Firebase Auth + Role Based Access)
+
+Dashboard UI Integration (shared theme and navigation sidebar)
+
+Testing + Deployment (to Firebase Hosting or Vercel)
+
+Folder Structure Standardization
+
+
+🧩 Shared Responsibilities (Navani & Sanjai)
+
+Both members are jointly responsible for building the Login and Signup Portal using Firebase Authentication, ensuring role-based access for admin and department heads. Together, they must design a Dashboard Navigation System that connects all modules with a consistent layout and theme. They will also collaborate on Firebase Structure Setup, configuring Firestore, Auth, and Storage connections.
+
+Both will handle Testing and Deployment at the final stage, ensuring that all modules are fully functional, responsive, and integrated seamlessly into the main dashboard. The project can be hosted using Firebase Hosting or Vercel.
+
+🔧 Project Flow Suggestion
+
+Week 1: Set up Firebase configuration, authentication, and basic responsive UI layout with navigation.
+
+Week 2: Build and connect the CRM and Finance modules (Sanjai and Navani collaborate on client–invoice linking).
+
+Week 3: Develop the Task Management and R&D modules, ensuring management panels and updates function correctly.
+
+Week 4: Implement the Marketing Calendar and Pikachu Chatbot, followed by final testing, debugging, and deployment.
+
+📦 End Goal
+
+Deliver a single, smart, and responsive NXRA Admin Portal that serves as the central system for the company’s internal operations — managing clients, finances, research updates, marketing campaigns, and internal tasks. The entire portal must be powered by Firebase and supported by an integrated chatbot named Pikachu, providing instant help and automation inside the system.
