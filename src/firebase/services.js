@@ -9,12 +9,100 @@ import {
   query,
   where,
   orderBy,
-  Timestamp
+  Timestamp,
+  writeBatch
 } from 'firebase/firestore';
 import { db } from './config';
 
 // Client Services
 export const clientService = {
+  // Create new project - Auto-distributes to multiple collections
+  async createProject(projectData) {
+    const batch = writeBatch(db);
+    
+    try {
+      // 1. Create/Update Client
+      const clientRef = doc(collection(db, 'clients'));
+      const clientData = {
+        name: projectData.clientName,
+        email: projectData.clientEmail,
+        company: projectData.company,
+        phone: projectData.clientPhone,
+        project: projectData.projectName,
+        status: 'active',
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
+      };
+      batch.set(clientRef, clientData);
+
+      // 2. Create Project
+      const projectRef = doc(collection(db, 'projects'));
+      const project = {
+        name: projectData.projectName,
+        description: projectData.projectDescription,
+        clientId: clientRef.id,
+        domain: projectData.domain,
+        startDate: projectData.startDate ? Timestamp.fromDate(new Date(projectData.startDate)) : Timestamp.now(),
+        dueDate: projectData.dueDate ? Timestamp.fromDate(new Date(projectData.dueDate)) : null,
+        status: 'ongoing',
+        assignedMembers: projectData.assignedMembers || [],
+        budget: projectData.budget || 0,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
+      };
+      batch.set(projectRef, project);
+
+      // 3. Create Invoice
+      if (projectData.paymentAmount) {
+        const invoiceRef = doc(collection(db, 'invoices'));
+        const invoice = {
+          invoiceNumber: `INV-${Date.now()}`,
+          clientId: clientRef.id,
+          projectId: projectRef.id,
+          amount: parseFloat(projectData.paymentAmount),
+          status: projectData.paymentStatus || 'pending',
+          dueDate: projectData.dueDate ? Timestamp.fromDate(new Date(projectData.dueDate)) : null,
+          paidDate: null,
+          createdAt: Timestamp.now()
+        };
+        batch.set(invoiceRef, invoice);
+      }
+
+      // 4. Create Tasks for assigned members
+      if (projectData.assignedMembers && projectData.assignedMembers.length > 0) {
+        for (const memberId of projectData.assignedMembers) {
+          const taskRef = doc(collection(db, 'tasks'));
+          const task = {
+            title: `Work on ${projectData.projectName}`,
+            description: projectData.projectDescription || '',
+            projectId: projectRef.id,
+            assignedTo: memberId,
+            assignedBy: projectData.createdBy || '',
+            status: 'pending',
+            priority: 'medium',
+            dueDate: projectData.dueDate ? Timestamp.fromDate(new Date(projectData.dueDate)) : null,
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now()
+          };
+          batch.set(taskRef, task);
+        }
+      }
+
+      // Commit all changes at once
+      await batch.commit();
+
+      return {
+        success: true,
+        clientId: clientRef.id,
+        projectId: projectRef.id,
+        message: 'Project created successfully with all related data!'
+      };
+    } catch (error) {
+      console.error('Error creating project:', error);
+      throw error;
+    }
+  },
+
   // Create new client
   async createClient(clientData) {
     try {
@@ -720,6 +808,211 @@ export const chatbotService = {
       };
     } catch (error) {
       console.error('Error getting chatbot analytics:', error);
+      throw error;
+    }
+  }
+};
+
+// Project Services
+export const projectService = {
+  async getAllProjects() {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'projects'));
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Error getting projects:', error);
+      throw error;
+    }
+  },
+
+  async getProjectById(id) {
+    try {
+      const docRef = doc(db, 'projects', id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting project:', error);
+      throw error;
+    }
+  },
+
+  async updateProject(id, projectData) {
+    try {
+      const docRef = doc(db, 'projects', id);
+      await updateDoc(docRef, {
+        ...projectData,
+        updatedAt: Timestamp.now()
+      });
+      return { id, ...projectData };
+    } catch (error) {
+      console.error('Error updating project:', error);
+      throw error;
+    }
+  }
+};
+
+// Task Services
+export const taskService = {
+  async getAllTasks() {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'tasks'));
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Error getting tasks:', error);
+      throw error;
+    }
+  },
+
+  async getTasksByUser(userId) {
+    try {
+      const tasks = await this.getAllTasks();
+      return tasks.filter(task => task.assignedTo === userId);
+    } catch (error) {
+      console.error('Error getting user tasks:', error);
+      throw error;
+    }
+  },
+
+  async createTask(taskData) {
+    try {
+      const docRef = await addDoc(collection(db, 'tasks'), {
+        ...taskData,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
+      });
+      return { id: docRef.id, ...taskData };
+    } catch (error) {
+      console.error('Error creating task:', error);
+      throw error;
+    }
+  },
+
+  async updateTask(id, taskData) {
+    try {
+      const docRef = doc(db, 'tasks', id);
+      await updateDoc(docRef, {
+        ...taskData,
+        updatedAt: Timestamp.now()
+      });
+      return { id, ...taskData };
+    } catch (error) {
+      console.error('Error updating task:', error);
+      throw error;
+    }
+  },
+
+  async deleteTask(id) {
+    try {
+      await deleteDoc(doc(db, 'tasks', id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw error;
+    }
+  }
+};
+
+// Invoice Services
+export const invoiceService = {
+  async getAllInvoices() {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'invoices'));
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Error getting invoices:', error);
+      throw error;
+    }
+  },
+
+  async getInvoicesByClient(clientId) {
+    try {
+      const invoices = await this.getAllInvoices();
+      return invoices.filter(inv => inv.clientId === clientId);
+    } catch (error) {
+      console.error('Error getting client invoices:', error);
+      throw error;
+    }
+  },
+
+  async createInvoice(invoiceData) {
+    try {
+      const docRef = await addDoc(collection(db, 'invoices'), {
+        ...invoiceData,
+        invoiceNumber: `INV-${Date.now()}`,
+        createdAt: Timestamp.now()
+      });
+      return { id: docRef.id, ...invoiceData };
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      throw error;
+    }
+  },
+
+  async updateInvoice(id, invoiceData) {
+    try {
+      const docRef = doc(db, 'invoices', id);
+      await updateDoc(docRef, invoiceData);
+      return { id, ...invoiceData };
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      throw error;
+    }
+  }
+};
+
+// User Services
+export const userService = {
+  async getAllUsers() {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'users'));
+      return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Error getting users:', error);
+      throw error;
+    }
+  },
+
+  async getUserById(id) {
+    try {
+      const docRef = doc(db, 'users', id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting user:', error);
+      throw error;
+    }
+  },
+
+  async createUser(userData) {
+    try {
+      const docRef = await addDoc(collection(db, 'users'), {
+        ...userData,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
+      });
+      return { id: docRef.id, ...userData };
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  },
+
+  async updateUser(id, userData) {
+    try {
+      const docRef = doc(db, 'users', id);
+      await updateDoc(docRef, {
+        ...userData,
+        updatedAt: Timestamp.now()
+      });
+      return { id, ...userData };
+    } catch (error) {
+      console.error('Error updating user:', error);
       throw error;
     }
   }
